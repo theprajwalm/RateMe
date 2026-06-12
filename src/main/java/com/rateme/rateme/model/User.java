@@ -9,7 +9,7 @@ import java.util.List;
 @Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
 
     @Column(nullable = false,unique = true) //same username not allowed
@@ -25,7 +25,7 @@ public class User {
     private String lastname;
     private String street;
     private String street_nr;
-    private String zip;
+    private int zip;
     private String city;
 
     //Security
@@ -80,11 +80,11 @@ public class User {
         this.street = street;
     }
 
-    public String getZip() {
+    public int getZip() {
         return zip;
     }
 
-    public void setZip(String zip) {
+    public void setZip(int zip) {
         this.zip = zip;
     }
 
@@ -126,5 +126,8 @@ public class User {
 
     public void setRatings(List<Rating> ratings) {
         this.ratings = ratings;
+    }
+
+    public void setZ() {
     }
 }
