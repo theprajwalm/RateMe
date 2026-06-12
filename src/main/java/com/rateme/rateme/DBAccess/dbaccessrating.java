@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -25,6 +26,7 @@ public class dbaccessrating {
         this.accesspoi=accesspoi;
     }
 
+    //find rating by Id
     public Rating findRatingById(long id){
         return entityManager.find(Rating.class,id);
     }
@@ -48,6 +50,9 @@ public class dbaccessrating {
         rating.setGrade(grade);
         rating.setPoi(poi);
         rating.setUser(user);
+
+        //saving rating in database
+        entityManager.persist(rating);
         return rating;
     }
 
@@ -57,7 +62,7 @@ public class dbaccessrating {
     }
 
     //delete Rating by ID
-    public Rating deleteRatingById(int Id){
+    public Rating deleteRatingById(long Id){
         //check if rating exists or not
         Rating rating = this.findRatingById(Id);
         if(rating==null){
@@ -95,10 +100,8 @@ public class dbaccessrating {
         Double avg =entityManager.createQuery(
                 "SELECT AVG(r.grade)FROM Rating r WHERE r.poi.id :poiId"
                 ,Double.class).getSingleResult();
-        if(avg==null){
-            System.out.println("No ratings yet!");
-        }
-        return avg;
+
+        return avg !=null?avg:0.0; //return avg if not null else equal then 0.0
     }
 
 
@@ -112,8 +115,11 @@ public class dbaccessrating {
         rating.setTxt(txt);
         rating.setGrade(grade);
         rating.setImage(image);
-        return rating;
+        return entityManager.merge(rating);
     }
-    //image
+
     //time when rating was created
+    public LocalDateTime ratingTime(Rating rating){
+        return rating.getCreatedAt();
+    }
 }

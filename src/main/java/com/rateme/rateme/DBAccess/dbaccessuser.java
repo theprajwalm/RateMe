@@ -99,5 +99,4 @@ public class dbaccessuser {
     public void deleteUser(User user){
         deleteUserById(user.getId());
     }
-
 }
