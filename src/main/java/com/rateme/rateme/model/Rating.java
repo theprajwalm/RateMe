@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Table(name = "Rating")
 public class Rating {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
@@ -20,12 +20,18 @@ public class Rating {
     private Poi poi;
 
     @ManyToOne
-    @Column(name= "image_id")
+    @JoinColumn(name= "image_id")
     private Image image;
+
 
     private int grade;
     private String txt;
     private LocalDateTime createdAt;
+
+    public Rating(){
+        this.createdAt=LocalDateTime.now();
+        //whenever rating is created. time will be automatically assigned.
+    }
 
     public int getId() {
         return id;

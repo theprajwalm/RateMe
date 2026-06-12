@@ -2,6 +2,9 @@ package com.rateme.rateme.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "user")
 public class User {
@@ -14,6 +17,9 @@ public class User {
 
     @Column(nullable = false,unique = false) //same email not allowed
     private String email;
+
+    @OneToMany(mappedBy = "user")
+    private List<Rating> ratings= new ArrayList<>(); //user can do many ratings
 
     private String firstname;
     private String lastname;
@@ -112,5 +118,13 @@ public class User {
 
     public void setPasswordSalt(byte[] passwordSalt) {
         this.passwordSalt = passwordSalt;
+    }
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
     }
 }

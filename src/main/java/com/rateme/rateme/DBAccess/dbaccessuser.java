@@ -81,11 +81,23 @@ public class dbaccessuser {
         return user;
     }
 
-    public void delete(User user){
+    public void deleteUserById(long userId){
         //check if user exists or not before deleting
-        User foundUser = findUserById(user.getId());
-        if(foundUser!=null){
-            entityManager.remove(foundUser);
+        User foundUser = findUserById(userId);
+        if (foundUser == null) {
+            throw new IllegalArgumentException("User with id " + userId + " not found");
         }
+
+        //deleting the rating of the user before.
+        entityManager.createQuery("DELETE FROM Rating r WHERE r.user.id = :userId")
+                .setParameter("userId", userId)
+                .executeUpdate();
+        //delete the user
+        entityManager.remove(foundUser);
     }
+
+    public void deleteUser(User user){
+        deleteUserById(user.getId());
+    }
+
 }

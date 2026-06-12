@@ -2,13 +2,15 @@ package com.rateme.rateme.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name="Poi")
 public class Poi{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     @Column(nullable = false) //cannot be empty
     private String name;
@@ -21,6 +23,17 @@ public class Poi{
 
     @Column(nullable = false)
     private String addrStreet;
+
+    @OneToMany(mappedBy = "poi")
+    private List<Rating> ratings;
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
 
     //Optional
     private Double lat;
@@ -41,6 +54,7 @@ public class Poi{
     private String addrCountry;
     private String tags;
 
+
     public String getTags() {
         return tags;
     }
@@ -49,11 +63,11 @@ public class Poi{
         this.tags = tags;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
