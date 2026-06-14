@@ -34,7 +34,8 @@ public class SecurityManager {
     }
 
     //get user from the String key
-    public User getUserToken(String token){
+    public User getUser(String token){
+        if(!this.tokenIsValid(token)) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Token is not found");
         return accessList.get(token);
     }
 
@@ -47,7 +48,7 @@ public class SecurityManager {
     //check if the given token is from the user or not
     public void checkTokenFromUser(String token,long userId){
         //first check wheather the token exist or not
-        if(userId!=this.getUserToken(token).getId()){
+        if(userId!=this.getUser(token).getId()){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
     }
