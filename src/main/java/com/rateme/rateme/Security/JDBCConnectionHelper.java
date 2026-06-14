@@ -1,4 +1,4 @@
-package com.rateme.rateme.util;
+package com.rateme.rateme.Security;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

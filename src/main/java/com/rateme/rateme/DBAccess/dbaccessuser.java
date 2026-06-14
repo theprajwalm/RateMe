@@ -1,7 +1,7 @@
 package com.rateme.rateme.DBAccess;
 
 import com.rateme.rateme.model.User;
-import com.rateme.rateme.util.PasswordTools;
+import com.rateme.rateme.Security.PasswordTools;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
