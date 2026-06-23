@@ -15,7 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true") //CORS for backend and frontend ports
 
 public class UserController {
     @Autowired

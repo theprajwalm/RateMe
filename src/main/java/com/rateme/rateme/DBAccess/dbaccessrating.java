@@ -62,7 +62,7 @@ public class dbaccessrating {
     }
 
     //delete Rating by ID
-    public Rating deleteRatingById(long Id){
+    public Rating deleteRatingById(int Id){
         //check if rating exists or not
         Rating rating = this.findRatingById(Id);
         if(rating==null){

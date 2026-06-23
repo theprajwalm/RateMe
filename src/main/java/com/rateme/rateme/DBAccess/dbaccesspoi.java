@@ -20,11 +20,11 @@ public class dbaccesspoi {
         this.entityManager=entityManager;
     }
 
-    public Poi findById(int Id){
+    public Poi findById(long Id){
         return this.entityManager.find(Poi.class,Id);
     }
 
     public List<Poi> findAll(){
-        return entityManager.createQuery("SELECT p FROM Pub p",Poi.class).getResultList();
+        return entityManager.createQuery("SELECT p FROM Poi p",Poi.class).getResultList();
     }
 }

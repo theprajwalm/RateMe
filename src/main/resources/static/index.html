@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HS-KL Location-Bewertung</title>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+
+    <!-- Leaflet CSS (OpenStreetMap) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- Custom CSS (must be external - professor rule) -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER (only visible when logged in)
+     ============================================================ -->
+<header id="app-header" class="w3-container w3-hide">
+    <h3>
+        HS-KL <em>Location</em>-Bewertung &nbsp;<br>
+        <span id="welcome-message">
+            Herzlich Willkommen <span id="logged-in-username"></span>
+        </span>
+        <button id="btn-logout" class="w3-button w3-red w3-small">Logout</button>
+    </h3>
+</header>
+
+<!-- ============================================================
+     LOGIN PROMPT BAR (visible when logged out)
+     ============================================================ -->
+<div id="login-prompt" class="w3-container w3-pale-yellow w3-padding w3-hideff">
+    <p>
+        Wenn Sie noch keinen Account haben, können Sie sich hier registrieren:
+        <a href="#" id="link-open-register">Registrieren</a>
+    </p>
+    <button id="btn-open-login" class="w3-button w3-blue w3-small">Login</button>
+</div>
+
+<!-- ============================================================
+     MAIN APP (only visible when logged in)
+     ============================================================ -->
+<main id="app-main" class="w3-hide">
+
+    <!-- TAB BUTTONS -->
+    <div class="w3-bar w3-black">
+        <button class="w3-bar-item w3-button tab-btn w3-red" data-tab="tab-bewerten">
+            Location Bewerten
+        </button>
+        <button class="w3-bar-item w3-button tab-btn" data-tab="tab-meine">
+            Meine Bewertungen
+        </button>
+    </div>
+
+    <!-- ── TAB 1: Location Bewerten ── -->
+    <div id="tab-bewerten" class="app-tab">
+        <div class="w3-row">
+
+            <!-- LEFT: Map -->
+            <div class="w3-col m7 l8">
+                <div id="map"></div>
+            </div>
+
+            <!-- RIGHT: POI Detail Panel -->
+            <div class="w3-col m5 l4 w3-padding" id="poi-detail-panel">
+
+                <!-- Shown when no POI selected yet -->
+                <p id="poi-placeholder" class="w3-text-grey">
+                    Wählen Sie eine Kneipe auf der Karte aus.
+                </p>
+
+                <!-- POI Info (hidden until marker click) -->
+                <div id="poi-info" class="w3-hide">
+                    <h4 id="poi-name"></h4>
+                    <ul id="poi-attributes" class="w3-ul">
+                        <!-- JS will inject <li> items here (only if value exists) -->
+                    </ul>
+
+                    <!-- Ratings Table -->
+                    <h5>Bewertungen</h5>
+                    <div class="w3-responsive">
+                        <table class="w3-table w3-bordered w3-small" id="ratings-table">
+                            <thead>
+                            <tr class="w3-light-grey">
+                                <th>Datum</th>
+                                <th>Name</th>
+                                <th>Kommentar</th>
+                                <th>Bewertung</th>
+                                <th>Bild</th>
+                            </tr>
+                            </thead>
+                            <tbody id="ratings-tbody">
+                            <!-- JS fills this -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Submit Rating Form -->
+                    <h5>Bewertung abgeben</h5>
+                    <div id="rating-form">
+                        <textarea
+                                id="rating-comment"
+                                class="w3-input w3-border"
+                                placeholder="Kommentar eingeben..."
+                                rows="3"
+                        ></textarea>
+
+                        <!-- Star Rating (W3Schools HowTo CSS stars) -->
+                        <div class="star-rating" id="star-rating-input">
+                            <span class="star" data-value="1">&#9733;</span>
+                            <span class="star" data-value="2">&#9733;</span>
+                            <span class="star" data-value="3">&#9733;</span>
+                            <span class="star" data-value="4">&#9733;</span>
+                            <span class="star" data-value="5">&#9733;</span>
+                        </div>
+                        <!-- Hidden field that stores selected star value -->
+                        <input type="hidden" id="rating-stars" value="0">
+
+                        <!-- File Upload -->
+                        <div class="w3-margin-top">
+                            <input type="file" id="rating-image" accept="image/*">
+                        </div>
+
+                        <button id="btn-submit-rating" class="w3-button w3-green w3-margin-top">
+                            Absenden
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            <!-- end RIGHT panel -->
+
+        </div>
+    </div>
+    <!-- end TAB 1 -->
+
+    <!-- ── TAB 2: Meine Bewertungen ── -->
+    <div id="tab-meine" class="app-tab w3-hide">
+        <div class="w3-container w3-padding">
+            <h4>Meine Bewertungen</h4>
+            <div class="w3-responsive">
+                <table class="w3-table w3-bordered w3-striped w3-small" id="my-ratings-table">
+                    <thead>
+                    <tr class="w3-light-grey">
+                        <th>Datum</th>
+                        <th>Location</th>
+                        <th>Kommentar</th>
+                        <th>Bewertung</th>
+                        <th>Bild</th>
+                    </tr>
+                    </thead>
+                    <tbody id="my-ratings-tbody">
+                    <!-- JS fills this -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- end TAB 2 -->
+
+</main>
+
+<!-- ============================================================
+     MODAL: LOGIN
+     ============================================================ -->
+<div id="modal-login" class="w3-modal">
+    <div class="w3-modal-content w3-card-4 w3-animate-top modal-box">
+
+        <div class="w3-container w3-blue w3-padding">
+            <h4>Login</h4>
+        </div>
+
+        <div class="w3-container w3-padding">
+            <label>Benutzername</label>
+            <input class="w3-input w3-border w3-margin-bottom"
+                   type="text" id="login-username" placeholder="Benutzername">
+
+            <label>Password</label>
+            <input class="w3-input w3-border w3-margin-bottom"
+                   type="password" id="login-password" placeholder="Password">
+
+            <p id="login-error" class="w3-text-red w3-hide"></p>
+
+            <button id="btn-login-submit" class="w3-button w3-blue">Login</button>
+            <button id="btn-login-cancel" class="w3-button w3-light-grey">Cancel</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- ============================================================
+     MODAL: REGISTER
+     ============================================================ -->
+<div id="modal-register" class="w3-modal">
+    <div class="w3-modal-content w3-card-4 w3-animate-top modal-box">
+
+        <div class="w3-container w3-blue w3-padding">
+            <h4>Registrieren</h4>
+        </div>
+
+        <div class="w3-container w3-padding">
+            <label>Benutzername</label>
+            <input class="w3-input w3-border w3-margin-bottom"
+                   type="text" id="reg-username" placeholder="Benutzername">
+
+            <label>Password</label>
+            <input class="w3-input w3-border w3-margin-bottom"
+                   type="password" id="reg-password" placeholder="Password">
+
+            <label>Vorname</label>
+            <input class="w3-input w3-border w3-margin-bottom"
+                   type="text" id="reg-firstname" placeholder="Vorname">
+
+            <label>Nachname</label>
+            <input class="w3-input w3-border w3-margin-bottom"
+                   type="text" id="reg-lastname" placeholder="Nachname">
+
+            <label>Email</label>
+            <input class="w3-input w3-border w3-margin-bottom"
+                   type="email" id="reg-email" placeholder="Email">
+
+            <label>Straße</label>
+            <input class="w3-input w3-border w3-margin-bottom"
+                   type="text" id="reg-street" placeholder="Straße">
+
+            <label>Hausnummer</label>
+            <input class="w3-input w3-border w3-margin-bottom"
+                   type="text" id="reg-housenumber" placeholder="Hausnummer">
+
+            <label>Postleitzahl</label>
+            <input class="w3-input w3-border w3-margin-bottom"
+                   type="text" id="reg-zip" placeholder="Postleitzahl">
+
+            <label>Ort</label>
+            <input class="w3-input w3-border w3-margin-bottom"
+                   type="text" id="reg-city" placeholder="Ort">
+
+            <p id="reg-error" class="w3-text-red w3-hide"></p>
+
+            <button id="btn-reg-submit" class="w3-button w3-blue">Registrieren</button>
+            <button id="btn-reg-cancel" class="w3-button w3-light-grey">Cancel</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- ============================================================
+     SCRIPTS (all external - professor rule: NO inline JS)
+     ============================================================ -->
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Our JS modules (order matters!) -->
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/map.js"></script>
+<script src="js/ratings.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

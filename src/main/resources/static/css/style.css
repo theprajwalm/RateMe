@@ -1,0 +1,171 @@
+/* =========================
+   GENERAL
+   ========================= */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+h3, h4, h5 {
+    margin-top: 0;
+}
+
+/* =========================
+   HEADER
+   ========================= */
+
+#app-header {
+    background-color: #222;
+    color: white;
+    padding: 10px 20px;
+}
+
+#welcome-message {
+    font-size: 16px;
+}
+
+/*#btn-logout {*/
+/*    */
+/*}*/
+
+/* =========================
+   LOGIN BAR
+   ========================= */
+
+#login-prompt {
+    border-bottom: 1px solid #ccc;
+}
+
+/* =========================
+   MAP
+   ========================= */
+
+#map {
+    width: 100%;
+    height: 80vh;
+    border-right: 1px solid #ccc;
+}
+
+/* =========================
+   POI PANEL
+   ========================= */
+
+#poi-detail-panel {
+    background-color: white;
+    height: 80vh;
+    overflow-y: auto;
+}
+
+#poi-info {
+    margin-top: 10px;
+}
+
+#poi-name {
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 8px;
+}
+
+/* =========================
+   TABLES
+   ========================= */
+
+table {
+    width: 100%;
+}
+
+th {
+    text-align: left;
+}
+
+td,
+th {
+    vertical-align: middle;
+}
+
+/* Images in tables */
+.rating-image-preview {
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 4px;
+}
+
+/* =========================
+   FORM
+   ========================= */
+
+#rating-comment {
+    resize: vertical;
+}
+
+#rating-image {
+    width: 100%;
+}
+
+/* =========================
+   STAR RATING
+   ========================= */
+
+.star-rating {
+    margin-top: 10px;
+    font-size: 30px;
+    user-select: none;
+}
+
+.star {
+    cursor: pointer;
+    color: #ccc;
+    transition: color 0.2s;
+}
+
+.star.active {
+    color: gold;
+}
+
+.star:hover {
+    color: orange;
+}
+
+/* =========================
+   MODALS
+   ========================= */
+
+.modal-box {
+    max-width: 500px;
+    margin-top: 80px;
+}
+
+#login-error,
+#reg-error {
+    font-weight: bold;
+}
+
+/* =========================
+   TABS
+   ========================= */
+
+.app-tab {
+    padding: 0;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 768px) {
+
+    #map {
+        height: 50vh;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+    }
+
+    #poi-detail-panel {
+        height: auto;
+    }
+
+    .star-rating {
+        font-size: 24px;
+    }
+}

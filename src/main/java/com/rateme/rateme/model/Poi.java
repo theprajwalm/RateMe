@@ -9,8 +9,7 @@ import java.util.List;
 public class Poi{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @Column(nullable = false) //cannot be empty
     private String name;
@@ -63,7 +62,7 @@ public class Poi{
         this.tags = tags;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
