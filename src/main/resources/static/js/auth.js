@@ -62,10 +62,6 @@ async function handleLogin() {
     } catch (error) {
         errorMessage.textContent = error.message || "Login failed";
         errorMessage.classList.remove("w3-hide");
-    } finally {
-        // Reset button state
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Login';
     }
 }
 
@@ -73,10 +69,17 @@ async function handleLogin() {
 // 4. UI STATE MANAGEMENT
 // ------------------------------------------------------------
 function showLoggedInState(user) {
+    document.getElementById("logged-in-username").textContent = user.username;
+
     document.getElementById("app-header").classList.remove("w3-hide");
     document.getElementById("app-main").classList.remove("w3-hide");
     document.getElementById("login-prompt").classList.add("w3-hide");
-    document.getElementById("logged-in-username").textContent = user.username;
+
+    if(!mapInstance){
+        console.warn("Map not inilialized");
+        initMapModule();
+    }
+
 }
 
 function showLoggedOutState() {

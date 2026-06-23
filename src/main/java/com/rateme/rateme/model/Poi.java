@@ -18,7 +18,7 @@ public class Poi{
     private String addrHousenumber;
 
     @Column(nullable = false)
-    private int addrPostcode;
+    private String addrPostcode;
 
     @Column(nullable = false)
     private String addrStreet;
@@ -86,11 +86,11 @@ public class Poi{
         this.addrHousenumber = addrHousenumber;
     }
 
-    public int getAddrPostcode() {
+    public String getAddrPostcode() {
         return addrPostcode;
     }
 
-    public void setAddrPostcode(int addrPostcode) {
+    public void setAddrPostcode(String addrPostcode) {
         this.addrPostcode = addrPostcode;
     }
 

@@ -50,3 +50,66 @@ async function logOut() {
         return { success: false, error: error.message };
     }
 }
+// ============================================================
+// api.js - Add POI functions
+// ============================================================
+
+// Get all POIs
+async function getPois() {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        throw new Error('No auth token found');
+    }
+
+    const response = await fetch(`${BASE_URL}/pois`, {
+        headers: {
+            'Authorization': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to load POIs: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+// Get POI details with average rating
+async function getPoiWithRating(poiId) {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        throw new Error('No auth token found');
+    }
+
+    const response = await fetch(`${BASE_URL}/pois/${poiId}/with-rating`, {
+        headers: {
+            'Authorization': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to load POI details: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+// Get ratings for a POI
+async function getPoiRatings(poiId) {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        throw new Error('No auth token found');
+    }
+
+    const response = await fetch(`${BASE_URL}/ratings/poi/${poiId}`, {
+        headers: {
+            'Authorization': token
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to load ratings: ${response.status}`);
+    }
+
+    return await response.json();
+}
