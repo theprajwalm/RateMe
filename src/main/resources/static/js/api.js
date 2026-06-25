@@ -14,12 +14,14 @@ async function login(username, password){
 
     const token = response.headers.get("Authorization");
     const userData = await response.json();
+    localStorage.setItem("authToken",token);
+    localStorage.setItem("user",JSON.stringify(userData));
 
     return { token, user: userData };
 }
 
-
 async function logOut() {
+
     const token = localStorage.getItem("authToken");
 
     if (!token) {
@@ -48,7 +50,10 @@ async function logOut() {
         // 6. Handle network errors
         console.error('Logout network error:', error);
         return { success: false, error: error.message };
-    }
+    } finally {
+    // clear local storage
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
 }
 // ============================================================
 // api.js - Add POI functions
@@ -62,8 +67,10 @@ async function getPois() {
     }
 
     const response = await fetch(`${BASE_URL}/pois`, {
+        method:"GET",
         headers: {
-            'Authorization': token
+            'Authorization': token,
+            'Content-Type': 'application/json'
         }
     });
 
@@ -82,6 +89,7 @@ async function getPoiWithRating(poiId) {
     }
 
     const response = await fetch(`${BASE_URL}/pois/${poiId}/with-rating`, {
+        method:"GET",
         headers: {
             'Authorization': token
         }
@@ -91,7 +99,7 @@ async function getPoiWithRating(poiId) {
         throw new Error(`Failed to load POI details: ${response.status}`);
     }
 
-    return await response.json();
+    return response.json();
 }
 
 // Get ratings for a POI
@@ -112,4 +120,5 @@ async function getPoiRatings(poiId) {
     }
 
     return await response.json();
+    }
 }

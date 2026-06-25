@@ -4,7 +4,9 @@ import com.rateme.rateme.DBAccess.dbaccesspoi;
 import com.rateme.rateme.DBAccess.dbaccessrating;
 import com.rateme.rateme.Security.SecurityManager;
 import com.rateme.rateme.dto.PoiDTO;
+import com.rateme.rateme.dto.RatingDTO;
 import com.rateme.rateme.model.Poi;
+import com.rateme.rateme.model.Rating;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,28 +44,6 @@ public class PoiController {
         return ResponseEntity.ok()
                 .header("Authorization", token)
                 .body(poiDTOs);
-    }
-
-    //getting pois by id
-    @GetMapping("/{poiId}")
-    public ResponseEntity<PoiDTO> getPoiById(
-            @RequestHeader("Authorization") String token,
-            @PathVariable long poiId) {
-
-        // Check if token is valid
-        securityManager.checkIfTokenIsAccepted(token);
-
-        // Find POI
-        Poi poi = accesspoi.findById(poiId);
-        if (poi == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "POI not found");
-        }
-
-        PoiDTO poiDTO = new PoiDTO(poi);
-
-        return ResponseEntity.ok()
-                .header("Authorization", token)
-                .body(poiDTO);
     }
 
     //getting poi with its average rating

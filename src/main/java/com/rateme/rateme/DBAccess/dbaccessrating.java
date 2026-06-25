@@ -98,8 +98,8 @@ public class dbaccessrating {
         }
 
         Double avg =entityManager.createQuery(
-                "SELECT AVG(r.grade)FROM Rating r WHERE r.poi.id :poiId"
-                ,Double.class).getSingleResult();
+                "SELECT AVG(r.grade)FROM Rating r WHERE r.poi.id =:poiId"
+                ,Double.class).setParameter("poiId",poiId).getSingleResult();
 
         return avg !=null?avg:0.0; //return avg if not null else equal then 0.0
     }

@@ -51,13 +51,15 @@ async function handleLogin() {
 
         // Store token and user data
         localStorage.setItem("authToken", result.token);
-        localStorage.setItem("user", JSON.stringify(result.user));  // ✅ Fixed: changed from authUser to user
+        localStorage.setItem("user", JSON.stringify(result.user));
+
 
         // Hide login modal
         hideLoginModal();
 
         // Show logged-in interface
         showLoggedInState(result.user);
+
 
     } catch (error) {
         errorMessage.textContent = error.message || "Login failed";
@@ -75,10 +77,7 @@ function showLoggedInState(user) {
     document.getElementById("app-main").classList.remove("w3-hide");
     document.getElementById("login-prompt").classList.add("w3-hide");
 
-    if(!mapInstance){
-        console.warn("Map not inilialized");
-        initMapModule();
-    }
+    initMapModule();
 
 }
 

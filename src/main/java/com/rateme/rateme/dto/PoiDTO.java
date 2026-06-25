@@ -1,41 +1,53 @@
 package com.rateme.rateme.dto;
 
+import com.rateme.rateme.model.Image;
 import com.rateme.rateme.model.Poi;
+import com.rateme.rateme.model.Rating;
 
-public record PoiDTO(long id,
-                     String name,
-                     String opening_hours,
-                     String addrHouseNumber,
-                     String addrPostcode,
-                     String addrStreet,
-                     double lat,
-                     double lon,
-                     double averageRating
-                     ) {
+import java.time.LocalDateTime;
+import java.util.List;
 
-    //Constructor without average rating
-    public PoiDTO(Poi poi){
+// PoiDTO - ONLY POI data
+public record PoiDTO(
+        long id,
+        String name,
+        String type,              // Art der Location
+        String phone,             // Telefonnummer
+        String opening_hours,
+        String addrHouseNumber,
+        String addrPostcode,
+        String addrStreet,
+        double lat,
+        double lon,
+        double averageRating      // Only the AVERAGE, not all ratings!
+) {
+    public PoiDTO(Poi poi) {
         this(poi.getId(),
                 poi.getName(),
+                poi.getType(),
+                poi.getPhone(),
                 poi.getOpeningHours(),
                 poi.getAddrHousenumber(),
                 poi.getAddrPostcode(),
                 poi.getAddrStreet(),
                 poi.getLat(),
                 poi.getLon(),
-                0);
+                0.0
+        );
     }
 
-    //Constructor with average rating
-    public PoiDTO(Poi poi,double averageRating){
+    public PoiDTO(Poi poi, double averageRating) {
         this(poi.getId(),
                 poi.getName(),
+                poi.getType(),
+                poi.getPhone(),
                 poi.getOpeningHours(),
                 poi.getAddrHousenumber(),
                 poi.getAddrPostcode(),
                 poi.getAddrStreet(),
                 poi.getLat(),
                 poi.getLon(),
-                averageRating);
+                averageRating
+        );
     }
 }
