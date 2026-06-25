@@ -130,6 +130,7 @@ function showLoggedInState(user) {
     document.getElementById("login-prompt").classList.add("w3-hide");
 
     initMapModule();
+    initTabs();
 
 }
 

@@ -29,7 +29,6 @@ async function loadPois(){
     }
         try{
             const pois = await getPois();
-            console.log(pois);
 
             pois.forEach(poi=>{
                 const lat = poi.lat;
@@ -84,6 +83,35 @@ function showPoiDetails(poi){
     document.getElementById("poi-info").classList.remove("w3-hide");
 
     document.getElementById("poi-name").textContent=poi.name || "unknown location";
+}
+
+function initTabs(){
+    //getting both tab buttons
+    const tab1=document.querySelectorAll('[data-tab="tab-bewerten"]');
+    const tab2=document.querySelectorAll('[data-tab="tab-meine"]');
+
+    //when tab1 is clicked
+    tab1.addEventListener("click",function(){
+        document.getElementById("tab-meine").classList.add("w3-hide");
+        document.getElementById("tab-bewerten").classList.remove("w3-hide");
+
+        //selected tab is red
+        tab1.classList.add("w3-red");
+        tab2.classList.remove("w3-red");
+    })
+
+    //when tab2 is selected
+    tab2.addEventListener("click",function(){
+        document.getElementById("tab-meine").classList.remove("w3-hide");
+        document.getElementById("tab-bewerten").classList.add("w3-hide");
+
+        //selected tab is red
+        tab1.classList.remove("w3-red");
+        tab2.classList.add("w3-red");
+
+        //loading user's ratings
+        loadMyRatings();
+    })
 }
 
 function initMapModule(){
