@@ -51,6 +51,13 @@ public class dbaccessrating {
         rating.setPoi(poi);
         rating.setUser(user);
 
+        //if image is uploaded
+        if (image != null) {
+            entityManager.persist(image);
+            rating.setImage(image);
+        }
+
+
         //saving rating in database
         entityManager.persist(rating);
         return rating;

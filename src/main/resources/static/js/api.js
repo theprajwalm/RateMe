@@ -141,3 +141,49 @@ async function getPoiRatings(poiId) {
 
     return await response.json();
 }
+
+// ============================================================
+// api.js - Add RATING functions
+// ============================================================
+async function submitRating(poiId,txt,grade,imageFile){
+    const  token= localStorage.getItem("authToken");
+    if(!token){
+        throw new Error("No auth token found");
+    }
+
+    //Using formdata to send images as json is just for texts.
+    const formData = new FormData();
+    formData.append("poiId",poiId);
+    formData.append("txt",txt);
+    formData.append("grade",grade);
+    //image is optional
+    if(imageFile){
+        formData.append("image",imageFile);
+    }
+
+    //here the content type is multipart/form-data
+    const response = await fetch(`${BASE_URL}/ratings`,{
+        method:"POST",
+        headers:{"Authorization":token},
+        body:formData
+    });
+
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message || `Failed to submit rating: ${response.status}`);
+    }
+    return await response.json();
+}
+
+async function getMyRatings() {
+    const token = localStorage.getItem('authToken');
+    if (!token) throw new Error('No auth token found');
+
+    const response = await fetch(`${BASE_URL}/ratings/user`, {
+        headers: { 'Authorization': token }
+    });
+
+    if (!response.ok) throw new Error(`Failed to load your ratings: ${response.status}`);
+
+    return await response.json();
+}

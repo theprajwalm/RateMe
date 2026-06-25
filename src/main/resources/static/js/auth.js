@@ -117,7 +117,6 @@ function hideRegisterModal(){
         "reg-email","reg-street","reg-housenumber","reg-zip","reg-city"].forEach(id =>{
             document.getElementById(id).value="";
     })
-    document.getElementById("modal-register").classList.remove("w3-show");
 }
 
 // ------------------------------------------------------------
