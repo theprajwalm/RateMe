@@ -7,6 +7,6 @@ public record UserDTI(String username,
                       String email,
                       String street,
                       String street_nr,
-                      int zip,
+                      String zip,
                       String city) {
 }

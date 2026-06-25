@@ -25,7 +25,7 @@ public class User {
     private String lastname;
     private String street;
     private String street_nr;
-    private int zip;
+    private String zip;
     private String city;
 
     //Security
@@ -80,11 +80,11 @@ public class User {
         this.street = street;
     }
 
-    public int getZip() {
+    public String getZip() {
         return zip;
     }
 
-    public void setZip(int zip) {
+    public void setZip(String zip) {
         this.zip = zip;
     }
 
@@ -126,8 +126,5 @@ public class User {
 
     public void setRatings(List<Rating> ratings) {
         this.ratings = ratings;
-    }
-
-    public void setZ() {
     }
 }

@@ -6,10 +6,22 @@
 // 1. INITIALIZATION
 // ------------------------------------------------------------
 function initAuth() {
+    //login
     document.getElementById("btn-open-login").addEventListener("click", showLoginModal);
+    //cancel inside the login
     document.getElementById('btn-login-cancel').addEventListener('click', hideLoginModal);
+    //submit the login details
     document.getElementById('btn-login-submit').addEventListener('click', handleLogin);
+    //logout when user is logged in
     document.getElementById("btn-logout").addEventListener("click", handleLogout);
+    //registration
+    document.getElementById("link-open-register").addEventListener("click",function (event){
+        event.preventDefault();
+        showRegisterModal();
+    })
+    //when registertion is clicked
+    document.getElementById("btn-reg-submit").addEventListener("click",handleRegister);
+    document.getElementById("btn-reg-cancel").addEventListener("click",hideRegisterModal);
     checkAuthStatus();
 }
 
@@ -65,6 +77,57 @@ async function handleLogin() {
         errorMessage.textContent = error.message || "Login failed";
         errorMessage.classList.remove("w3-hide");
     }
+}
+
+//Handle Register
+function showRegisterModal(){
+    document.getElementById("modal-register").classList.add("w3-show");
+}
+
+async function handleRegister() {
+    //getting value from the browser
+    const username   = document.getElementById("reg-username").value.trim();
+    const password   = document.getElementById("reg-password").value.trim();
+    const firstname  = document.getElementById("reg-firstname").value.trim();
+    const lastname   = document.getElementById("reg-lastname").value.trim();
+    const email      = document.getElementById("reg-email").value.trim();
+    const street     = document.getElementById("reg-street").value.trim();
+    const street_nr  = document.getElementById("reg-housenumber").value.trim();
+    const zip        = document.getElementById("reg-zip").value.trim();
+    const city       = document.getElementById("reg-city").value.trim();
+
+    const error = document.getElementById("reg-error");
+
+    if (!username || !password || !firstname || !lastname || !email) {
+        error.textContent = "Please fill up the details";
+        error.classList.remove("w3-hide");
+        return;
+    }
+    //calling the api
+    try{
+        const user= await register(username,password,firstname,lastname,email,street,street_nr,zip,city);
+
+        //hiding the register form
+        hideRegisterModal();
+
+        //user logged in
+        showLoggedInState(user);
+    }catch (error){
+        error.textContent="Registertion error";
+        error.classList.remove("w3-hide");
+    }
+}
+
+//HideRegister
+function hideRegisterModal(){
+    document.getElementById("modal-register").classList.remove("w3-show");
+
+    //when cancel is clicked all the filled info will be empty
+    ["reg-username","reg-password","reg-firstname","reg-lastname",
+        "reg-email","reg-street","reg-housenumber","reg-zip","reg-city"].forEach(id =>{
+            document.getElementById(id).value="";
+    })
+    document.getElementById("modal-register").classList.remove("w3-show");
 }
 
 // ------------------------------------------------------------
@@ -123,8 +186,3 @@ function checkAuthStatus() {
         showLoggedOutState();
     }
 }
-
-// ------------------------------------------------------------
-// 7. INITIALIZE ON PAGE LOAD
-// ------------------------------------------------------------
-document.addEventListener("DOMContentLoaded", initAuth);

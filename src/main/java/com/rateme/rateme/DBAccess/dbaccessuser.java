@@ -46,7 +46,7 @@ public class dbaccessuser {
         }
     }
 
-    public User createUser(String username,String password,String firstname,String lastname,String email,String street,String street_nr,int zip,String city){
+    public User createUser(String username,String password,String firstname,String lastname,String email,String street,String street_nr,String zip,String city){
         if (findUserByName(username) != null) {
             throw new IllegalArgumentException("This username already exists");
         }

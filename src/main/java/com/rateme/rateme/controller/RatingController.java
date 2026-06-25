@@ -133,7 +133,7 @@ public class RatingController {
             User user = accessrating.findRatingById(ratingId).getUser();
 
             //check if the user is trying to edit others rating
-            if(existingUser != user){
+            if(existingUser.getId() != user.getId()){
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Access denied");
             }
 

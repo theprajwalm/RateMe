@@ -1,5 +1,23 @@
 const BASE_URL = "http://localhost:8080";
 
+async function register(username,password,firstname,lastname,email,street,street_nr,zip,city){
+    const response = await fetch(`${BASE_URL}/user/register`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({username,password,firstname,lastname,email,street,street_nr,zip,city})
+    });
+
+    if(!response.ok){
+        throw new Error(await response.text() || "Error in Registeration");
+    }
+
+    const token = response.headers.get("Authorization");
+    const userData = await response.json();
+    localStorage.setItem("authToken",token);
+    localStorage.setItem("user",JSON.stringify(userData));
+    return {token,user};
+
+}
 async function login(username, password){
     const response = await fetch(`${BASE_URL}/user/login`, {
         method: 'POST',
@@ -14,10 +32,10 @@ async function login(username, password){
 
     const token = response.headers.get("Authorization");
     const userData = await response.json();
-    localStorage.setItem("authToken",token);
-    localStorage.setItem("user",JSON.stringify(userData));
+    localStorage.setItem("authToken", token);
+    localStorage.setItem("user", JSON.stringify(userData));
 
-    return { token, user: userData };
+    return { token, user };
 }
 
 async function logOut() {
@@ -43,17 +61,18 @@ async function logOut() {
         if (!response.ok) {
             // Even if backend fails, we should still clear local state
             console.warn('Logout API returned error:', response.status);
-            return { success: false, error: 'Logout failed on server' };
+            return {success: false, error: 'Logout failed on server'};
         }
 
     } catch (error) {
         // 6. Handle network errors
         console.error('Logout network error:', error);
-        return { success: false, error: error.message };
+        return {success: false, error: error.message};
     } finally {
-    // clear local storage
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
+        // clear local storage
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+    }
 }
 // ============================================================
 // api.js - Add POI functions
@@ -67,7 +86,7 @@ async function getPois() {
     }
 
     const response = await fetch(`${BASE_URL}/pois`, {
-        method:"GET",
+        method: "GET",
         headers: {
             'Authorization': token,
             'Content-Type': 'application/json'
@@ -89,7 +108,7 @@ async function getPoiWithRating(poiId) {
     }
 
     const response = await fetch(`${BASE_URL}/pois/${poiId}/with-rating`, {
-        method:"GET",
+        method: "GET",
         headers: {
             'Authorization': token
         }
@@ -120,5 +139,4 @@ async function getPoiRatings(poiId) {
     }
 
     return await response.json();
-    }
 }
