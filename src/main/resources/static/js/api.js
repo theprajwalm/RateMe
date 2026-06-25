@@ -1,5 +1,14 @@
 const BASE_URL = "http://localhost:8080";
 
+function handleApiError(response) {
+    if (response.status === 403 || response.status === 401) {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        location.reload();
+    }
+    throw new Error(`Request failed: ${response.status}`);
+}
+
 async function register(username,password,firstname,lastname,email,street,street_nr,zip,city){
     const response = await fetch(`${BASE_URL}/user/register`,{
         method:"POST",
@@ -11,11 +20,10 @@ async function register(username,password,firstname,lastname,email,street,street
         throw new Error(await response.text() || "Error in Registeration");
     }
 
-    const token = response.headers.get("Authorization");
     const userData = await response.json();
-    localStorage.setItem("authToken",token);
-    localStorage.setItem("user",JSON.stringify(userData));
-    return {token,user:userData};
+    localStorage.setItem("authToken", userData.token);
+    localStorage.setItem("user", JSON.stringify(userData));
+    return { token: userData.token, user: userData };
 
 }
 async function login(username, password){
@@ -30,12 +38,11 @@ async function login(username, password){
         throw new Error(errorData.message || "Login Failed");
     }
 
-    const token = response.headers.get("Authorization");
     const userData = await response.json();
-    localStorage.setItem("authToken", token);
+    localStorage.setItem("authToken", userData.token);
     localStorage.setItem("user", JSON.stringify(userData));
 
-    return { token, user:userData };
+    return { token: userData.token, user: userData };
 }
 
 async function logOut() {
@@ -94,9 +101,7 @@ async function getPois() {
         }
     });
 
-    if (!response.ok) {
-        throw new Error(`Failed to load POIs: ${response.status}`);
-    }
+    if (!response.ok) handleApiError(response);
 
     return await response.json();
 }
@@ -104,20 +109,14 @@ async function getPois() {
 // Get POI details with average rating
 async function getPoiWithRating(poiId) {
     const token = localStorage.getItem('authToken');
-    if (!token) {
-        throw new Error('No auth token found');
-    }
+    if (!token) throw new Error('No auth token found');
 
     const response = await fetch(`${BASE_URL}/pois/${poiId}/with-rating`, {
         method: "GET",
-        headers: {
-            'Authorization': token
-        }
+        headers: { 'Authorization': token }
     });
 
-    if (!response.ok) {
-        throw new Error(`Failed to load POI details: ${response.status}`);
-    }
+    if (!response.ok) handleApiError(response);
 
     return response.json();
 }
@@ -125,53 +124,14 @@ async function getPoiWithRating(poiId) {
 // Get ratings for a POI
 async function getPoiRatings(poiId) {
     const token = localStorage.getItem('authToken');
-    if (!token) {
-        throw new Error('No auth token found');
-    }
+    if (!token) throw new Error('No auth token found');
 
     const response = await fetch(`${BASE_URL}/ratings/poi/${poiId}`, {
-        headers: {
-            'Authorization': token
-        }
+        headers: { 'Authorization': token }
     });
 
-    if (!response.ok) {
-        throw new Error(`Failed to load ratings: ${response.status}`);
-    }
+    if (!response.ok) handleApiError(response);
 
-    return await response.json();
-}
-
-// ============================================================
-// api.js - Add RATING functions
-// ============================================================
-async function submitRating(poiId,txt,grade,imageFile){
-    const  token= localStorage.getItem("authToken");
-    if(!token){
-        throw new Error("No auth token found");
-    }
-
-    //Using formdata to send images as json is just for texts.
-    const formData = new FormData();
-    formData.append("poiId",poiId);
-    formData.append("txt",txt);
-    formData.append("grade",grade);
-    //image is optional
-    if(imageFile){
-        formData.append("image",imageFile);
-    }
-
-    //here the content type is multipart/form-data
-    const response = await fetch(`${BASE_URL}/ratings`,{
-        method:"POST",
-        headers:{"Authorization":token},
-        body:formData
-    });
-
-    if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.message || `Failed to submit rating: ${response.status}`);
-    }
     return await response.json();
 }
 
@@ -183,7 +143,38 @@ async function getMyRatings() {
         headers: { 'Authorization': token }
     });
 
-    if (!response.ok) throw new Error(`Failed to load your ratings: ${response.status}`);
+    if (!response.ok) handleApiError(response);
 
     return await response.json();
+}
+
+async function submitRating(poiId, txt, grade, imageFile) {
+    const token = localStorage.getItem("authToken");
+    if (!token) throw new Error("No auth token found");
+    let imageBase64 = null;
+    if (imageFile) {
+        imageBase64 = await toBase64(imageFile);
+    }
+    const response = await fetch(`${BASE_URL}/ratings`, {
+        method: "POST",
+        headers: {
+            "Authorization": token,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ poiId, txt, grade, image: imageBase64 })
+    });
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.message || `Failed: ${response.status}`);
+    }
+    return await response.json();
+}
+
+function toBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
 }

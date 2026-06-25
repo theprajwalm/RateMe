@@ -43,7 +43,7 @@ public class UserController {
 
                 //Generate the token Security
                 String token = securityManager.createUserToken(user);
-                UserDTO userDTO = new UserDTO(user.getUsername(),user.getFirstname(),user.getLastname(),user.getEmail());
+                UserDTO userDTO = new UserDTO(token, user.getUsername(),user.getFirstname(),user.getLastname(),user.getEmail());
 
                 //returning token in header and response in body.
                 return ResponseEntity.ok().header("Authorization",token).body(userDTO);
@@ -68,7 +68,7 @@ public class UserController {
         //create the token everytime a userlogin cause when userlog out token is removed.
         String token = securityManager.createUserToken(user);
 
-        UserDTO userDTO = new UserDTO(user.getUsername(),user.getFirstname(), user.getLastname(),user.getEmail());
+        UserDTO userDTO = new UserDTO(token, user.getUsername(),user.getFirstname(), user.getLastname(),user.getEmail());
         return ResponseEntity.ok().header("Authorization",token).body(userDTO);
     }
 
@@ -79,7 +79,7 @@ public class UserController {
         //get user from the token
        User user= securityManager.getUser(token);
 
-        UserDTO userDTO=new UserDTO(user.getUsername(),user.getFirstname(), user.getLastname(), user.getEmail());
+        UserDTO userDTO=new UserDTO(null, user.getUsername(),user.getFirstname(), user.getLastname(), user.getEmail());
         return ResponseEntity.ok().header("Authorization",token).body(userDTO);
     }
 

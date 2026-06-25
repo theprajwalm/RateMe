@@ -4,6 +4,7 @@ import com.rateme.rateme.model.Image;
 import com.rateme.rateme.model.Rating;
 
 import java.time.LocalDateTime;
+import java.util.Base64;
 
 public record RatingDTO(
         int ratingId,
@@ -11,17 +12,21 @@ public record RatingDTO(
         String poi,
         int grade,
         String txt,
-        Image image,
+        String image,
         LocalDateTime createdAt
 ) {
-    //constructor to change the rating to rating DTO
-    public RatingDTO(Rating rating){
-         this(rating.getId(),
+    public RatingDTO(Rating rating) {
+        this(rating.getId(),
                 rating.getUser().getUsername(),
                 rating.getPoi().getName(),
                 rating.getGrade(),
                 rating.getTxt(),
-                rating.getImage(),
+                encodeImage(rating.getImage()),
                 rating.getCreatedAt());
+    }
+
+    private static String encodeImage(Image image) {
+        if (image == null || image.getImg() == null) return null;
+        return Base64.getEncoder().encodeToString(image.getImg());
     }
 }

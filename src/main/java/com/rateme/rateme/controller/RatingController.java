@@ -75,7 +75,7 @@ public class RatingController {
 
     //getting all the poi ratings
     @GetMapping("poi/{poiId}")
-    public ResponseEntity<List<RatingDTO>> getAllPoiRatings(@RequestHeader("Authorization") String token,@PathVariable int poiId){
+    public ResponseEntity<List<RatingDTO>> getAllPoiRatings(@RequestHeader("Authorization") String token,@PathVariable long poiId){
         // Check if token is valid
         securityManager.checkIfTokenIsAccepted(token);
 
