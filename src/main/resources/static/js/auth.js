@@ -124,14 +124,12 @@ function hideRegisterModal(){
 // ------------------------------------------------------------
 function showLoggedInState(user) {
     document.getElementById("logged-in-username").textContent = user.username;
-
     document.getElementById("app-header").classList.remove("w3-hide");
     document.getElementById("app-main").classList.remove("w3-hide");
     document.getElementById("login-prompt").classList.add("w3-hide");
-
     initMapModule();
     initTabs();
-
+    initRatingsModule(); // add this
 }
 
 function showLoggedOutState() {

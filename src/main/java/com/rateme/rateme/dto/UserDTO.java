@@ -1,10 +1,8 @@
 package com.rateme.rateme.dto;
 
-import com.rateme.rateme.Security.SecurityManager;
-
-public record UserDTO(String username,
+public record UserDTO(String token,
+                      String username,
                       String firstname,
                       String lastname,
-                      String email
-                      ) {
+                      String email) {
 }

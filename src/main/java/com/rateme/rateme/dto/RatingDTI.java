@@ -1,6 +1,4 @@
 package com.rateme.rateme.dto;
 
-import com.rateme.rateme.model.Image;
-
-public record RatingDTI(int poiId,String txt,int grade, Image image) {
+public record RatingDTI(long poiId, String txt, int grade, String image) {
 }

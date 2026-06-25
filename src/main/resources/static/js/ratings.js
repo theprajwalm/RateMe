@@ -1,3 +1,4 @@
+let selectedRating = 0;
 //star to give when rating
 function initStarRating() {
     const stars = document.querySelectorAll('.star');
@@ -56,7 +57,7 @@ async function loadMyRatings(){
 
         ratings.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
 
-        ratings.forEach(ratings =>{
+        ratings.forEach(rating =>{
             const row = document.createElement('tr');
 
             //Date
@@ -78,7 +79,7 @@ async function loadMyRatings(){
             const imageCell = document.createElement('td');
             if (rating.image) {
                 const img = document.createElement('img');
-                img.src = rating.image;
+                img.src = 'data:image/jpeg;base64,' + rating.image;
                 img.alt = 'Rating image';
                 img.className = 'rating-image-preview';
                 img.style.maxWidth = '80px';
@@ -93,6 +94,35 @@ async function loadMyRatings(){
         });
     }catch (e) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#999;">Failed to load</td></tr>';
+    }
+}
+
+function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('de-DE') + ', ' + d.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'});
+}
+function getStarDisplay(grade) {
+    return '★'.repeat(grade) + '☆'.repeat(5 - grade);
+}
+
+async function handleSubmitRating() {
+    const comment = document.getElementById('rating-comment').value.trim();
+    const grade = parseInt(document.getElementById('rating-stars').value);
+    const imageFile = document.getElementById('rating-image').files[0];
+    if (!currentPoi) return;
+    if (grade < 1) { alert('Bitte eine Bewertung auswählen'); return; }
+    try {
+        await submitRating(currentPoi, comment, grade, imageFile);
+        // reset form
+        document.getElementById('rating-comment').value = '';
+        selectedRating = 0;
+        highlightStars(0);
+        document.getElementById('rating-stars').value = 0;
+        document.getElementById('rating-image').value = '';
+        // refresh ratings table
+        await loadPoiRatings(currentPoi);
+    } catch (e) {
+        alert('Fehler beim Absenden: ' + e.message);
     }
 }
 

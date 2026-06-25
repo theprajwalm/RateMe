@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.List;
 
 @Repository
@@ -32,7 +33,7 @@ public class dbaccessrating {
     }
 
     //create Rating
-    public Rating createRating(int userId, int poiId, String txt, int grade, Image image){
+    public Rating createRating(int userId, long poiId, String txt, int grade, String imageBase64){
         //check if user exits or not
         User user = accessuser.findUserById(userId);
         if(user==null){
@@ -52,11 +53,12 @@ public class dbaccessrating {
         rating.setUser(user);
 
         //if image is uploaded
-        if (image != null) {
+        if (imageBase64 != null) {
+            //changing into image
+            Image image = decodeImage(imageBase64);
             entityManager.persist(image);
             rating.setImage(image);
         }
-
 
         //saving rating in database
         entityManager.persist(rating);
@@ -89,7 +91,7 @@ public class dbaccessrating {
     }
 
     //All thea rating of the poi
-    public List<Rating> allRatingOfPoi(int poiId){
+    public List<Rating> allRatingOfPoi(long poiId){
         Poi poi = accesspoi.findById(poiId);
         if(poi==null){
             throw new IllegalArgumentException("No poi found");
@@ -98,7 +100,7 @@ public class dbaccessrating {
     }
 
     //Getting average rating of the poi
-    public double averageRatings(int poiId){
+    public double averageRatings(long poiId){
         Poi poi = accesspoi.findById(poiId);
         if(poi==null){
             throw new IllegalArgumentException("No poi found");
@@ -113,7 +115,7 @@ public class dbaccessrating {
 
 
     //Editing rating
-    public Rating editRatings(int ratingId,String txt, int grade, Image image){
+    public Rating editRatings(int ratingId,String txt, int grade, String imageBase64){
         //check if rating exists or not
         Rating rating = this.findRatingById(ratingId);
         if(rating==null){
@@ -121,8 +123,18 @@ public class dbaccessrating {
         }
         rating.setTxt(txt);
         rating.setGrade(grade);
-        rating.setImage(image);
+        if (imageBase64 != null) {
+            rating.setImage(decodeImage(imageBase64));
+        }
         return entityManager.merge(rating);
+    }
+
+    //JSON cannot be used for Byte so getting the string imaage;
+    private Image decodeImage(String base64) {
+        String data = base64.contains(",") ? base64.split(",")[1] : base64;
+        Image image = new Image();
+        image.setImg(Base64.getDecoder().decode(data));
+        return image;
     }
 
     //time when rating was created

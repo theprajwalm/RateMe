@@ -50,18 +50,16 @@ public class PoiController {
     @GetMapping("/{poiId}/with-rating")
     public ResponseEntity<PoiDTO> getPoiWithRating(
             @RequestHeader("Authorization") String token,
-            @PathVariable int poiId) {
+            @PathVariable long poiId) {
 
         // Check if token is valid
         securityManager.checkIfTokenIsAccepted(token);
 
-        // Find POI
         Poi poi = accesspoi.findById(poiId);
         if (poi == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "POI not found");
         }
 
-        // Get average rating
         double averageRating = accessrating.averageRatings(poiId);
 
         // Convert to DTO with average rating
