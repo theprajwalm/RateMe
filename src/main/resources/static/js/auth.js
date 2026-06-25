@@ -112,7 +112,7 @@ async function handleRegister() {
 
         //user logged in
         showLoggedInState(user);
-    }catch (error){
+    }catch (err){
         error.textContent="Registertion error";
         error.classList.remove("w3-hide");
     }

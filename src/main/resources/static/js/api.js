@@ -15,7 +15,7 @@ async function register(username,password,firstname,lastname,email,street,street
     const userData = await response.json();
     localStorage.setItem("authToken",token);
     localStorage.setItem("user",JSON.stringify(userData));
-    return {token,user};
+    return {token,user:userData};
 
 }
 async function login(username, password){
@@ -35,7 +35,7 @@ async function login(username, password){
     localStorage.setItem("authToken", token);
     localStorage.setItem("user", JSON.stringify(userData));
 
-    return { token, user };
+    return { token, user:userData };
 }
 
 async function logOut() {
