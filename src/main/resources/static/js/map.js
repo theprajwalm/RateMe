@@ -87,7 +87,6 @@ function showPoiDetails(poi){
 }
 
 function initMapModule(){
-    console.log(mapInitialized);
     if(mapInitialized){
         console.log(mapInitialized);
         return;

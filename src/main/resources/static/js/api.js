@@ -63,6 +63,7 @@ async function logOut() {
             console.warn('Logout API returned error:', response.status);
             return {success: false, error: 'Logout failed on server'};
         }
+        return{success:true};
 
     } catch (error) {
         // 6. Handle network errors

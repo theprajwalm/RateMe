@@ -60,19 +60,10 @@ async function handleLogin() {
 
     try {
         const result = await login(username, password);
-
-        // Store token and user data
-        localStorage.setItem("authToken", result.token);
-        localStorage.setItem("user", JSON.stringify(result.user));
-
-
         // Hide login modal
         hideLoginModal();
-
         // Show logged-in interface
         showLoggedInState(result.user);
-
-
     } catch (error) {
         errorMessage.textContent = error.message || "Login failed";
         errorMessage.classList.remove("w3-hide");
@@ -103,15 +94,14 @@ async function handleRegister() {
         error.classList.remove("w3-hide");
         return;
     }
+
     //calling the api
     try{
-        const user= await register(username,password,firstname,lastname,email,street,street_nr,zip,city);
-
+        const result= await register(username,password,firstname,lastname,email,street,street_nr,zip,city);
         //hiding the register form
         hideRegisterModal();
-
         //user logged in
-        showLoggedInState(user);
+        showLoggedInState(result.user);
     }catch (err){
         error.textContent="Registertion error";
         error.classList.remove("w3-hide");
@@ -160,6 +150,7 @@ function showLoggedOutState() {
 // ------------------------------------------------------------
 async function handleLogout() {
     const result = await logOut();
+    console.log(result);
 
     if(!result.success){
         console.warn("logout API Issue:",result.error);
