@@ -1,4 +1,4 @@
-package com.rateme.rateme.DBAccess;
+package com.rateme.rateme.dbaccess;
 
 import com.rateme.rateme.model.Poi;
 import jakarta.persistence.Entity;
@@ -11,12 +11,12 @@ import java.util.List;
 
 @Repository
 @Transactional
-public class dbaccesspoi {
+public class PoiDataAccess {
     //Construction Injection
     private final EntityManager entityManager;
 
     @Autowired
-    public dbaccesspoi(EntityManager entityManager){
+    public PoiDataAccess(EntityManager entityManager){
         this.entityManager=entityManager;
     }
 

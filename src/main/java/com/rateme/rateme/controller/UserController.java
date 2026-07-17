@@ -1,6 +1,6 @@
 package com.rateme.rateme.controller;
 
-import com.rateme.rateme.DBAccess.dbaccessuser;
+import com.rateme.rateme.dbaccess.UserDataAccess;
 import com.rateme.rateme.Security.PasswordTools;
 import com.rateme.rateme.Security.SecurityManager;
 import com.rateme.rateme.dto.LogInDTO;
@@ -18,18 +18,18 @@ import org.springframework.web.server.ResponseStatusException;
 
 public class UserController {
     @Autowired
-    private final dbaccessuser accessuser;
+    private final UserDataAccess userDataAccess;
     private final SecurityManager securityManager;
 
-    public UserController(dbaccessuser accessuser,SecurityManager securityManager){
-        this.accessuser=accessuser;
+    public UserController(UserDataAccess userDataAccess,SecurityManager securityManager){
+        this.userDataAccess=userDataAccess;
         this.securityManager=securityManager;
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserDTI userDTI){
         try {
-            User user =accessuser.createUser(
+            User user =userDataAccess.createUser(
                     userDTI.username(),
                     userDTI.password(),
                     userDTI.firstname(),
@@ -56,7 +56,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<UserDTO> login(@RequestBody LogInDTO logInDTO){
         //Check if username and password are valid or not
-        User user =accessuser.findUserByName(logInDTO.username());
+        User user =userDataAccess.findUserByName(logInDTO.username());
         if(user==null){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Incorrect Login Credentials");
         }

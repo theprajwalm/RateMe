@@ -1,7 +1,7 @@
 package com.rateme.rateme.controller;
 
-import com.rateme.rateme.DBAccess.dbaccesspoi;
-import com.rateme.rateme.DBAccess.dbaccessrating;
+import com.rateme.rateme.dbaccess.PoiDataAccess;
+import com.rateme.rateme.dbaccess.RatingDataAccess;
 import com.rateme.rateme.Security.SecurityManager;
 import com.rateme.rateme.dto.PoiDTO;
 import com.rateme.rateme.dto.RatingDTO;
@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 @RequestMapping("/pois")
 public class PoiController {
 
-    private final dbaccesspoi accesspoi;
-    private final dbaccessrating accessrating;
+    private final PoiDataAccess poiDataAccess;
+    private final RatingDataAccess ratingDataAccess;
     private final SecurityManager securityManager;
 
-    public PoiController(dbaccesspoi accesspoi, dbaccessrating accessrating, SecurityManager securityManager) {
-        this.accesspoi = accesspoi;
-        this.accessrating = accessrating;
+    public PoiController(PoiDataAccess poiDataAccess, RatingDataAccess ratingDataAccess, SecurityManager securityManager) {
+        this.poiDataAccess = poiDataAccess;
+        this.ratingDataAccess = ratingDataAccess;
         this.securityManager = securityManager;
     }
 
@@ -37,7 +37,7 @@ public class PoiController {
         securityManager.checkIfTokenIsAccepted(token);
 
         // Get all POIs from database
-        List<Poi> pois = accesspoi.findAll();
+        List<Poi> pois = poiDataAccess.findAll();
 
         List<PoiDTO> poiDTOs=pois.stream().map(poi -> new PoiDTO(poi)).collect(Collectors.toList());
 
@@ -55,12 +55,12 @@ public class PoiController {
         // Check if token is valid
         securityManager.checkIfTokenIsAccepted(token);
 
-        Poi poi = accesspoi.findById(poiId);
+        Poi poi = poiDataAccess.findById(poiId);
         if (poi == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "POI not found");
         }
 
-        double averageRating = accessrating.averageRatings(poiId);
+        double averageRating = ratingDataAccess.averageRatings(poiId);
 
         // Convert to DTO with average rating
         PoiDTO poiDTO = new PoiDTO(poi,averageRating);

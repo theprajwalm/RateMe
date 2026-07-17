@@ -1,4 +1,4 @@
-package com.rateme.rateme.DBAccess;
+package com.rateme.rateme.dbaccess;
 
 import com.rateme.rateme.model.Image;
 import com.rateme.rateme.model.Poi;
@@ -15,16 +15,16 @@ import java.util.List;
 
 @Repository
 @Transactional
-public class dbaccessrating {
+public class RatingDataAccess {
     private final EntityManager entityManager;
-    private final dbaccessuser accessuser;
-    private final dbaccesspoi accesspoi;
+    private final UserDataAccess userDataAccess;
+    private final PoiDataAccess poiDataAccess;
 
     @Autowired
-    public dbaccessrating(EntityManager entityManager,dbaccessuser accessuser,dbaccesspoi accesspoi){
+    public RatingDataAccess(EntityManager entityManager,UserDataAccess userDataAccess,PoiDataAccess poiDataAccess){
         this.entityManager=entityManager;
-        this.accessuser=accessuser;
-        this.accesspoi=accesspoi;
+        this.userDataAccess=userDataAccess;
+        this.poiDataAccess=poiDataAccess;
     }
 
     //find rating by Id
@@ -35,13 +35,13 @@ public class dbaccessrating {
     //create Rating
     public Rating createRating(int userId, long poiId, String txt, int grade, String imageBase64){
         //check if user exits or not
-        User user = accessuser.findUserById(userId);
+        User user = userDataAccess.findUserById(userId);
         if(user==null){
             throw new IllegalArgumentException("User doesnt exits");
         }
 
         //checking if poi exits or not
-        Poi poi = accesspoi.findById(poiId);
+        Poi poi = poiDataAccess.findById(poiId);
         if(poi==null){
             throw new IllegalArgumentException("Poi not found");
         }
@@ -83,7 +83,7 @@ public class dbaccessrating {
 
     //All the rating from the user
     public List<Rating> allRatingFromUser(int userId){
-        User user =accessuser.findUserById(userId);
+        User user =userDataAccess.findUserById(userId);
         if(user==null){
             throw new IllegalArgumentException("No User found");
         }
@@ -92,7 +92,7 @@ public class dbaccessrating {
 
     //All thea rating of the poi
     public List<Rating> allRatingOfPoi(long poiId){
-        Poi poi = accesspoi.findById(poiId);
+        Poi poi = poiDataAccess.findById(poiId);
         if(poi==null){
             throw new IllegalArgumentException("No poi found");
         }
@@ -101,7 +101,7 @@ public class dbaccessrating {
 
     //Getting average rating of the poi
     public double averageRatings(long poiId){
-        Poi poi = accesspoi.findById(poiId);
+        Poi poi = poiDataAccess.findById(poiId);
         if(poi==null){
             throw new IllegalArgumentException("No poi found");
         }

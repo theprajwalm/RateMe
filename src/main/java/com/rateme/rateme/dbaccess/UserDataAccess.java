@@ -1,4 +1,4 @@
-package com.rateme.rateme.DBAccess;
+package com.rateme.rateme.dbaccess;
 
 import com.rateme.rateme.model.User;
 import com.rateme.rateme.Security.PasswordTools;
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository //just like a component but for DBAccess
 @Transactional //No need to manually do rollback and commit now
-public class dbaccessuser {
+public class UserDataAccess {
     private final EntityManager entityManager;
 
     @Autowired
-    public dbaccessuser(EntityManager entityManager){
+    public UserDataAccess(EntityManager entityManager){
         this.entityManager=entityManager;
     }
 

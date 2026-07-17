@@ -1,7 +1,7 @@
 package com.rateme.rateme.controller;
 
-import com.rateme.rateme.DBAccess.dbaccesspoi;
-import com.rateme.rateme.DBAccess.dbaccessrating;
+import com.rateme.rateme.dbaccess.PoiDataAccess;
+import com.rateme.rateme.dbaccess.RatingDataAccess;
 import com.rateme.rateme.Security.SecurityManager;
 import com.rateme.rateme.dto.RatingDTI;
 import com.rateme.rateme.dto.RatingDTO;
@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/ratings")
 public class RatingController {
 
-    private final dbaccessrating accessrating;
+    private final RatingDataAccess ratingDataAccess;
     private final SecurityManager securityManager;
 
-    public RatingController(dbaccessrating accessrating,SecurityManager securityManager){
-        this.accessrating=accessrating;
+    public RatingController(RatingDataAccess ratingDataAccess,SecurityManager securityManager){
+        this.ratingDataAccess=ratingDataAccess;
         this.securityManager=securityManager;
     }
 
@@ -43,7 +43,7 @@ public class RatingController {
         }
 
         //create a Rating for a poi
-        Rating rating =accessrating.createRating(user.getId(),ratingDTI.poiId(),ratingDTI.txt(), ratingDTI.grade(), ratingDTI.image());
+        Rating rating =ratingDataAccess.createRating(user.getId(),ratingDTI.poiId(),ratingDTI.txt(), ratingDTI.grade(), ratingDTI.image());
 
         RatingDTO ratingDTO = new RatingDTO(rating);
 
@@ -62,7 +62,7 @@ public class RatingController {
         User user = securityManager.getUser(token);
 
         // Get all ratings from user
-        List<Rating> ratings = accessrating.allRatingFromUser(user.getId());
+        List<Rating> ratings = ratingDataAccess.allRatingFromUser(user.getId());
 
         List<RatingDTO> ratingDTOs=ratings.
                 stream().map(
@@ -80,7 +80,7 @@ public class RatingController {
         securityManager.checkIfTokenIsAccepted(token);
 
         // Get all ratings for the POI
-        List<Rating> ratings = accessrating.allRatingOfPoi(poiId);
+        List<Rating> ratings = ratingDataAccess.allRatingOfPoi(poiId);
 
         // Convert to DTOs using the constructor
         List<RatingDTO> ratingDTOs = ratings.stream()
@@ -104,7 +104,7 @@ public class RatingController {
         User existingUser = securityManager.getUser(token);
 
         //User who wrote the rating
-        User user = accessrating.findRatingById(ratingId).getUser();
+        User user = ratingDataAccess.findRatingById(ratingId).getUser();
 
         //check if the user is trying to edit others rating
         if(existingUser.getId() != user.getId()){
@@ -116,7 +116,7 @@ public class RatingController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Grade must be between 0 and 5");
         }
 
-        Rating rating =accessrating.editRatings(ratingId, ratingDTI.txt(), ratingDTI.grade(), ratingDTI.image());
+        Rating rating =ratingDataAccess.editRatings(ratingId, ratingDTI.txt(), ratingDTI.grade(), ratingDTI.image());
 
         RatingDTO  ratingDTO = new RatingDTO(rating);
 
@@ -130,7 +130,7 @@ public class RatingController {
             User existingUser = securityManager.getUser(token);
 
             //User who wrote the rating
-            User user = accessrating.findRatingById(ratingId).getUser();
+            User user = ratingDataAccess.findRatingById(ratingId).getUser();
 
             //check if the user is trying to edit others rating
             if(existingUser.getId() != user.getId()){
@@ -138,7 +138,7 @@ public class RatingController {
             }
 
             //delete the ratings
-            accessrating.deleteRatingById(ratingId);
+            ratingDataAccess.deleteRatingById(ratingId);
 
             return ResponseEntity.ok().header("Authorization", token).body("Delete sucessfully");
 
@@ -153,7 +153,7 @@ public class RatingController {
         securityManager.checkIfTokenIsAccepted(token);
 
         // Get the rating
-        Rating rating = accessrating.findRatingById(ratingId);
+        Rating rating = ratingDataAccess.findRatingById(ratingId);
         if (rating == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Rating not found");
         }
