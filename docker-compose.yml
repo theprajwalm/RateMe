@@ -1,0 +1,34 @@
+name: rateme
+
+services:
+  dbserver:
+    build: ./db/db
+    container_name: rateme_dbserver
+    ports:
+      - "3306:3306"
+    networks:
+      - rateme-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--protocol", "TCP"]
+      retries: 20
+      interval: 3s
+      timeout: 30s
+
+  springserver:
+    build: .
+    container_name: rateme_appserver
+    ports:
+      - "8080:8080"
+    depends_on:
+      dbserver:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://dbserver:3306/swtp_rateme
+      - SPRING_DATASOURCE_USERNAME=root
+    networks:
+      - rateme-network
+
+networks:
+  rateme-network:
+    name: rateme-network
+    driver: bridge
