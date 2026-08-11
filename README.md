@@ -34,8 +34,3 @@ The application runs on `http://localhost:8080`.
 ## What I Practiced
 
 This project helped me gain practical experience with **Spring Boot, REST API development, JPA/Hibernate, relational databases, and Docker** while building a complete backend application.
-
-## Author
-
-**Prajwal Mishra**
-Computer Science Student — Hochschule Kaiserslautern
